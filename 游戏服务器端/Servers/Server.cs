@@ -17,8 +17,8 @@ namespace GameServer.Servers
         private List<Room> roomList = new List<Room>();
         private ControllerManager controllerManager;
 
-        public Server() {}
-        public Server(string ipStr,int port)
+        public Server() { }
+        public Server(string ipStr, int port)
         {
             controllerManager = new ControllerManager(this);
             SetIpAndPort(ipStr, port);
@@ -36,10 +36,10 @@ namespace GameServer.Servers
             serverSocket.Listen(0);
             serverSocket.BeginAccept(AcceptCallBack, null);
         }
-        private void AcceptCallBack(IAsyncResult ar  )
+        private void AcceptCallBack(IAsyncResult ar)
         {
             Socket clientSocket = serverSocket.EndAccept(ar);
-            Client client = new Client(clientSocket,this);
+            Client client = new Client(clientSocket, this);
             client.Start();
             clientList.Add(client);
             serverSocket.BeginAccept(AcceptCallBack, null);
@@ -51,8 +51,9 @@ namespace GameServer.Servers
                 clientList.Remove(client);
             }
         }
-        public void SendResponse(Client client,ActionCode actionCode,string data)
+        public void SendResponse(Client client, ActionCode actionCode, string data)
         {
+            Console.WriteLine("把" + data + "发送回去");
             client.Send(actionCode, data);
         }
         public void HandleRequest(RequestCode requestCode, ActionCode actionCode, string data, Client client)
@@ -78,7 +79,7 @@ namespace GameServer.Servers
         }
         public Room GetRoomById(int id)
         {
-            foreach(Room room in roomList)
+            foreach (Room room in roomList)
             {
                 if (room.GetId() == id) return room;
             }
