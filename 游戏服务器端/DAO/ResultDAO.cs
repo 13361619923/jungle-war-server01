@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,12 @@ namespace GameServer.DAO
 {
     class ResultDAO
     {
+        /// <summary>
+        /// 根据用户主键得到战绩
+        /// </summary>
+        /// <param name="conn">数据库连接</param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public Result GetResultByUserid( MySqlConnection conn,int userId)
         {
             MySqlDataReader reader = null;
@@ -29,6 +35,7 @@ namespace GameServer.DAO
                 }
                 else
                 {
+                    //没有查询到结果，也返回一个默认值
                     Result res = new Result(-1, userId, 0, 0);
                     return res;
                 }
