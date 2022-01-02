@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,18 +10,26 @@ using GameServer.Model;
 
 namespace GameServer.Controller
 {
-    class UserController:BaseController
+    class UserController : BaseController
     {
-        private UserDAO userDAO = new UserDAO();
+        private UserDAO userDAO = new UserDAO();//初始化不需要参数
         private ResultDAO resultDAO = new ResultDAO();
         public UserController()
         {
             requestCode = RequestCode.User;
         }
+
+        /// <summary>
+        /// 用来处理来自客户端的登录请求
+        /// </summary>
+        /// <param name="data">接收到的来自客户端的用户名密码字符串</param>
+        /// <param name="client"></param>
+        /// <param name="server"></param>
+        /// <returns></returns>
         public string Login(string data, Client client, Server server)
         {
-            string[] strs = data.Split(',');
-            User user =  userDAO.VerifyUser(client.MySQLConn, strs[0], strs[1]);
+            string[] strs = data.Split(',');//对接收的字符串用逗号进行分割
+            User user = userDAO.VerifyUser(client.MySQLConn, strs[0], strs[1]);
             if (user == null)
             {
                 //Enum.GetName(typeof(ReturnCode), ReturnCode.Fail);
@@ -38,8 +46,8 @@ namespace GameServer.Controller
         public string Register(string data, Client client, Server server)
         {
             string[] strs = data.Split(',');
-            string username = strs[0];string password = strs[1];
-            bool res = userDAO.GetUserByUsername(client.MySQLConn,username);
+            string username = strs[0]; string password = strs[1];
+            bool res = userDAO.GetUserByUsername(client.MySQLConn, username);
             if (res)
             {
                 return ((int)ReturnCode.Fail).ToString();

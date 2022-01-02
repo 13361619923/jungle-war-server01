@@ -19,6 +19,9 @@ namespace GameServer.Controller
             InitController();
         }
 
+        /// <summary>
+        /// 在controllerDict字典中添加固定的内容
+        /// </summary>
         void InitController()
         {
             DefaultController defaultController = new DefaultController();
@@ -37,19 +40,21 @@ namespace GameServer.Controller
                 Console.WriteLine("无法得到[" + requestCode + "]所对应的Controller,无法处理请求"); return;
             }
             string methodName = Enum.GetName(typeof(ActionCode), actionCode);
-            MethodInfo mi = controller.GetType().GetMethod(methodName);
+
+            MethodInfo mi = controller.GetType().GetMethod(methodName);//通过反射获取对应Controller中的方法
             if (mi == null)
             {
                 Console.WriteLine("[警告]在Controller[" + controller.GetType() + "]中没有对应的处理方法:[" + methodName + "]"); return;
             }
-            object[] parameters = new object[] { data, client, server };
-            object o = mi.Invoke(controller, parameters);
+            object[] parameters = new object[] { data, client, server };//将参数转化成object数组
+            object o = mi.Invoke(controller, parameters);//调用Controller中的处理数据的方法
             if (o == null || string.IsNullOrEmpty(o as string))
             {
                 return;
             }
-            Console.WriteLine("actionCode = " + actionCode);
-            Console.WriteLine("Login方法的返回值是" + o as string);
+            Console.WriteLine("完成数据处理，发送相应");
+            Console.WriteLine("响应的结果是：" + (o as string));
+            //处理完数据之后发送相应
             server.SendResponse(client, actionCode, o as string);
         }
 

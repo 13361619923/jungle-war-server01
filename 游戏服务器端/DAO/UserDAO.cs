@@ -7,20 +7,31 @@ using MySql.Data.MySqlClient;
 using GameServer.Model;
 namespace GameServer.DAO
 {
+    /// <summary>
+    /// 用户直接操作数据库
+    /// </summary>
     class UserDAO
     {
-        public User VerifyUser(MySqlConnection conn, string username,string password)
+        /// <summary>
+        /// 校验用户名和密码
+        /// </summary>
+        /// <param name="conn">数据库链接</param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public User VerifyUser(MySqlConnection conn, string username, string password)
         {
-            MySqlDataReader reader = null;
+            MySqlDataReader reader = null;//用于接收执行查询语句的返回值
             try
             {
-                MySqlCommand cmd = new MySqlCommand("select * from user where username = @username and password = @password", conn);
-                cmd.Parameters.AddWithValue("username", username);
-                cmd.Parameters.AddWithValue("password", password);
-                reader = cmd.ExecuteReader();
-                if (reader.Read())
+                //创建一个SQL命令
+                MySqlCommand cmd = new MySqlCommand("select * from user where username = @username and password = @password", conn);//查询用户的SQL语句
+                cmd.Parameters.AddWithValue("username", username);//设置username参数
+                cmd.Parameters.AddWithValue("password", password);//设置password参数
+                reader = cmd.ExecuteReader();//执行查询语句
+                if (reader.Read())//如果返回true则查询到了数据
                 {
-                    int id = reader.GetInt32("id");
+                    int id = reader.GetInt32("id");     //读取id列数据
                     User user = new User(id, username, password);
                     return user;
                 }
@@ -28,13 +39,14 @@ namespace GameServer.DAO
                 {
                     return null;
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                Console.WriteLine("在VerifyUser的时候出现异常："+e);
+                Console.WriteLine("在VerifyUser的时候出现异常：" + e);//报异常
             }
             finally
             {
-                if (reader != null) reader.Close();
+                if (reader != null) reader.Close();//关闭数据库链接资源
             }
             return null;
         }

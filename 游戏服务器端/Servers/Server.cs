@@ -53,8 +53,14 @@ namespace GameServer.Servers
         }
         public void SendResponse(Client client, ActionCode actionCode, string data)
         {
-            Console.WriteLine("把" + data + "发送回去");
-            client.Send(actionCode, data);
+            try
+            {
+                client.Send(actionCode, data);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("数据发送异常" + e);
+            }
         }
         public void HandleRequest(RequestCode requestCode, ActionCode actionCode, string data, Client client)
         {

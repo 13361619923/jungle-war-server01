@@ -24,7 +24,7 @@ namespace GameServer.Servers
 
         public int HP
         {
-            get;set;
+            get; set;
         }
         public bool TakeDamage(int damage)
         {
@@ -41,14 +41,14 @@ namespace GameServer.Servers
         {
             get { return mysqlConn; }
         }
-        public void SetUserData(User user,Result result)
+        public void SetUserData(User user, Result result)
         {
             this.user = user;
             this.result = result;
         }
         public string GetUserData()
         {
-            return user.Id+","+ user.Username + "," + result.TotalCount + "," + result.WinCount;
+            return user.Id + "," + user.Username + "," + result.TotalCount + "," + result.WinCount;
         }
         public Room Room
         {
@@ -61,12 +61,15 @@ namespace GameServer.Servers
         }
 
         public Client() { }
-        public Client(Socket clientSocket,Server server)
+        public Client(Socket clientSocket, Server server)
         {
             this.clientSocket = clientSocket;
             this.server = server;
             mysqlConn = ConnHelper.Connect();
         }
+        /// <summary>
+        /// 开始接收客户端的数据
+        /// </summary>
         public void Start()
         {
             if (clientSocket == null || clientSocket.Connected == false) return;
@@ -83,7 +86,7 @@ namespace GameServer.Servers
                 {
                     Close();
                 }
-                msg.ReadMessage(count,OnProcessMessage);
+                msg.ReadMessage(count, OnProcessMessage);
                 Start();
             }
             catch (Exception e)
@@ -92,7 +95,13 @@ namespace GameServer.Servers
                 Close();
             }
         }
-        private void OnProcessMessage(RequestCode requestCode,ActionCode actionCode,string data)
+        /// <summary>
+        /// 处理接收到的数据
+        /// </summary>
+        /// <param name="requestCode"></param>
+        /// <param name="actionCode"></param>
+        /// <param name="data"></param>
+        private void OnProcessMessage(RequestCode requestCode, ActionCode actionCode, string data)
         {
             server.HandleRequest(requestCode, actionCode, data, this);
         }
@@ -111,9 +120,11 @@ namespace GameServer.Servers
         {
             try
             {
+                Console.WriteLine("服务器端发送数据给客户端，发送的数据是" + data);
                 byte[] bytes = Message.PackData(actionCode, data);
                 clientSocket.Send(bytes);
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 Console.WriteLine("无法发送消息:" + e);
             }
