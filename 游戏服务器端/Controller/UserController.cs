@@ -37,10 +37,11 @@ namespace GameServer.Controller
             }
             else
             {
-                return ((int)ReturnCode.Success).ToString();
-                //Result res = resultDAO.GetResultByUserid(client.MySQLConn, user.Id);
-                //client.SetUserData(user, res);
-                //return  string.Format("{0},{1},{2},{3}", ((int)ReturnCode.Success).ToString(), user.Username, res.TotalCount, res.WinCount);
+                //return ((int)ReturnCode.Success).ToString();
+                Result res = resultDAO.GetResultByUserid(client.MySQLConn, user.Id);
+                client.SetUserData(user, res);
+                //返回字符串格式： returnCode + Username + TotalCount + WinCount
+                return string.Format("{0},{1},{2},{3}", ((int)ReturnCode.Success).ToString(), user.Username, res.TotalCount, res.WinCount);
             }
         }
         public string Register(string data, Client client, Server server)
